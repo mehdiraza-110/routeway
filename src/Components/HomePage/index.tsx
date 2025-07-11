@@ -62,8 +62,8 @@ const HomePage = () => {
     }
     localStorage.setItem("quoteData", JSON.stringify(formData));
     router.push("/quote-options");
-    let vehType = formData.vehicleType;
-    let phone = formData.phone;
+    const vehType = formData.vehicleType;
+    const phone = formData.phone;
     const payload = {
       vehType,
       phone,
