@@ -89,8 +89,9 @@ export async function POST(req: Request) {
     // .join('\n');
     
     // Build Google Sheet payload (your existing structure)
+    let dateToday = new Date();
     const sheetPayload = {
-      policyStart: policyStartDate,
+      policyStart: dateToday,
       phone: phone,
       email: email,
       vehicleType: quoteRequest.vehicleType || '',
