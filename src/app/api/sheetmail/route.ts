@@ -82,11 +82,11 @@ export async function POST(req: Request) {
     // });
 
     // console.log('Email sent:', emailResponse.response);
-    const flattenedVehicles = vehicles
-    .map((v, i) => 
-      `Vehicle ${i + 1}: ${v.year || ''} ${v.make || ''} - ${v.vehicleType || ''}, ${v.grossWeight || ''} lbs`
-    )
-    .join('\n');
+    // const flattenedVehicles = vehicles
+    // .map((v, i) => 
+    //   `Vehicle ${i + 1}: ${v.year || ''} ${v.make || ''} - ${v.vehicleType || ''}, ${v.grossWeight || ''} lbs`
+    // )
+    // .join('\n');
     
     // Build Google Sheet payload (your existing structure)
     const sheetPayload = {
@@ -100,7 +100,9 @@ export async function POST(req: Request) {
       businessStructure: step1.businessStructure || '',
       dbaName: step1.dbaName || '',
       usdotNumberStatus: step1.usdotNumberStatus || '',
+      usDotNumber: step1.usDotNumber || '',
       city: step2.city || '',
+      state: step2.state || '',
       dob: dob,
       firstName: step2.firstName || '',
       lastName: step2.lastName || '',
@@ -111,7 +113,7 @@ export async function POST(req: Request) {
       suffix: step2.suffix || '',
       addVehicleBy: step3.addVehicleBy || '',
       antiLockBrakes: step3.antiLockBrakes || '',
-      antiTheftDevices: step3.antiTheftDevices || '',
+      antiTheftDevices: step3.antiTheftDevices.toString() || '',
       driverAirbag: step3.driverAirbag || '',
       farthestDistance: step3.farthestDistance || '',
       grossVehicleWeight: step3.grossVehicleWeight || '',
@@ -119,6 +121,8 @@ export async function POST(req: Request) {
       make: step3.make || '',
       rearAxles: step3.rearAxles || '',
       year: step3.year || '',
+      vin: step3.vin || '',
+      bodyType: step3.bodyType || '',
       // vehicles: vehicles.map((vehicle: any) => ({
       //   addBy: vehicle.addBy || '',
       //   antiTheftDevices: vehicle.antiTheftDevices || '',
@@ -136,7 +140,7 @@ export async function POST(req: Request) {
       //   year: vehicle.year || '',
       //   zipCode: vehicle.zipCode || '',
       // })),
-      vehicles: flattenedVehicles,
+      vehicles: vehicles.toString() || '',
       hasAccidents: step5.hasAccidents || '',
       hasCdl: step5.hasCdl || '',
       isExcluded: step5.isExcluded || '',
@@ -144,7 +148,7 @@ export async function POST(req: Request) {
       hasAutoInsurance: step6.hasAutoInsurance || '',
       numNamedInsureds: step6.numNamedInsureds || '',
       numWaiverHolders: step6.numWaiverHolders || '',
-      otherCoverageType: step6.otherCoverageType || '',
+      otherCoverageType: step6.otherCoverageType.toString() || '',
       requiresBlanketInsured: step6.requiresBlanketInsured || '',
       requiresBlanketWaiver: step6.requiresBlanketWaiver || '',
       requiresFiling: step6.requiresFiling || '',

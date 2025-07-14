@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 // A small component for the purple help icon, styled to match the image.
@@ -135,6 +135,7 @@ const ApplicationStep3Page = () => {
   }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVin, setIsVin] = useState<boolean>(false);
   const [formData, setFormData] = useState(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("quoteData");
@@ -147,11 +148,12 @@ const ApplicationStep3Page = () => {
         zipCode: "33316",
         farthestDistance: "",
         antiLockBrakes: "yes",
-        antiTheftDevices: "",
+        antiTheftDevices: [],
         driverAirbag: "no",
         grossVehicleWeight: "",
         rearAxles: "",
         loanLease: "no",
+        vin: ""
       };
     } else {
       return (
@@ -163,15 +165,65 @@ const ApplicationStep3Page = () => {
         zipCode: "33316",
         farthestDistance: "",
         antiLockBrakes: "yes",
-        antiTheftDevices: "",
+        antiTheftDevices: [],
         driverAirbag: "no",
         grossVehicleWeight: "",
         rearAxles: "",
         loanLease: "no",
+        vin: ""
         }
       )
     }
   });
+
+  const antiTheftOptions = [
+  "Alarm System",
+  "GPS Tracker",
+  "Steering Wheel Lock",
+  "Kill Switch",
+  "VIN Etching",
+  "Remote Immobilizer",
+  "OnStar or Equivalent",
+  "Smart Key/Keyless Entry",
+  "Electronic Engine Immobilizer",
+  "Brake Lock",
+  "Hood Lock",
+  "Wheel Lock",
+];
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  const handleCheckboxChange = (option: string) => {
+    const currentSelection = formData.antiTheftDevices || [];
+
+    const updatedSelection = currentSelection.includes(option)
+      ? currentSelection.filter((item) => item !== option)
+      : [...currentSelection, option];
+
+    setFormData((prev) => ({
+      ...prev,
+      antiTheftDevices: updatedSelection,
+    }));
+  };
+
+    // 🔒 Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const savedData = localStorage.getItem("applicationStep3");
@@ -200,6 +252,15 @@ const ApplicationStep3Page = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleMultiChange = (e) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
 
   const handleVehicleTypeSave = (newType: string) => {
     setFormData((prev) => ({ ...prev, vehicleType: newType }));
@@ -245,7 +306,10 @@ const ApplicationStep3Page = () => {
                   name="addVehicleBy"
                   value="yearMakeModel"
                   checked={formData?.addVehicleBy === "yearMakeModel"}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    handleInputChange(e)
+                    setIsVin(false); 
+                  }}
                 />
                 <span>Year, Make, Model</span>
               </label>
@@ -255,12 +319,21 @@ const ApplicationStep3Page = () => {
                   name="addVehicleBy"
                   value="vin"
                   checked={formData?.addVehicleBy === "vin"}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setIsVin(true); 
+                  }}
                 />
                 <span>VIN</span>
               </label>
             </div>
           </div>
+          {isVin && (
+            <div>
+              <label htmlFor="vin">Vin:</label>
+              <input type="text" max={17} maxLength={17} onChange={handleInputChange} name="vin" className="w-full h-12 px-4 rounded-md border border-gray-300 bg-white" />
+            </div>
+          )}
 
           {/* Form Row: Year */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -320,7 +393,7 @@ const ApplicationStep3Page = () => {
           {/* Form Row: Body Style */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             <label className="font-medium">Body Style</label>
-            <span className="md:col-span-2">N/A</span>
+            <input type="text" name="bodyType" onChange={handleInputChange} className="md:col-span-2 h-12 px-4 rounded-md border border-gray-300 bg-white" />
           </div>
 
           {/* Form Row: Zip Code */}
@@ -407,21 +480,38 @@ const ApplicationStep3Page = () => {
                 selected.)
               </span>
             </label>
-            <select
-              id="antiTheftDevices"
-              name="antiTheftDevices"
-              value={formData.antiTheftDevices}
-              onChange={handleInputChange}
-              className="md:col-span-2 w-full h-12 px-4 rounded-md border border-gray-300 bg-white"
-            >
-              <option value="" disabled>
-                Select a device
-              </option>
-              {/* Add device options here */}
-              <option value="Alarm System">Alarm System</option>
-              <option value="GPS Tracker">GPS Tracker</option>
-              <option value="Steering Wheel Lock">Steering Wheel Lock</option>
-            </select>
+             <div className="relative w-full md:col-span-2" ref={dropdownRef}>
+              <label className="block font-medium text-gray-700 mb-1">
+                Anti-Theft Devices
+              </label>
+              <div
+                onClick={toggleDropdown}
+                className="border border-gray-300 rounded-md px-4 py-2 bg-white cursor-pointer"
+              >
+                {formData.antiTheftDevices?.length > 0
+                  ? formData.antiTheftDevices.join(", ")
+                  : "Select devices"}
+              </div>
+
+              {isOpen && (
+                <div className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto border border-gray-300 bg-white rounded-md shadow-md">
+                  {antiTheftOptions.map((option) => (
+                    <label
+                      key={option}
+                      className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.antiTheftDevices?.includes(option)}
+                        onChange={() => handleCheckboxChange(option)}
+                        className="mr-2"
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Form Row: Driver-side Airbag */}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FC } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 // --- Helper Component ---
 const QuestionMarkIcon: FC = () => (
@@ -15,7 +16,7 @@ const ApplicationStep6Page = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     hasAutoInsurance: "no",
-    otherCoverageType: "none",
+    otherCoverageType: [],
     numNamedInsureds: "0",
     numWaiverHolders: "0",
     requiresBlanketInsured: "no",
@@ -39,11 +40,92 @@ const ApplicationStep6Page = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCoverageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { value, checked } = e.target;
+
+    setFormData((prev) => {
+      let updatedCoverage = [...prev.otherCoverageType];
+
+      if (value === "none") {
+        // If "None" is selected, clear all selections
+        updatedCoverage = [];
+      } else {
+        // Deselect "None" if any other option is selected
+        updatedCoverage = updatedCoverage.filter((v) => v !== "none");
+
+        if (checked) {
+          if (!updatedCoverage.includes(value)) {
+            updatedCoverage.push(value);
+          }
+        } else {
+          updatedCoverage = updatedCoverage.filter((v) => v !== value);
+        }
+      }
+
+      return { ...prev, otherCoverageType: updatedCoverage };
+    });
+  };
+
+   const handleMail = async (payload) => {
+  
+      const res = await fetch('/api/sheetmail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        console.log('Email sent successfully:', data);
+        toast.success("Your request has been sent successfully!");
+        return true;
+      } else {
+        toast.error('Failed to send email.');
+        return false;
+      }
+  
+    }
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Corrected key to 'applicationStep6'
     localStorage.setItem("applicationStep6", JSON.stringify(formData));
-    router.push("/application/step-7"); // Assuming next step is a summary page
+
+     const applicationData = {
+      quoteRequest: JSON.parse(localStorage.getItem("quoteData") || "{}"),
+      step1: JSON.parse(localStorage.getItem("applicationStep1") || "{}"),
+      step2: JSON.parse(localStorage.getItem("applicationStep2") || "{}"),
+      step3: JSON.parse(localStorage.getItem("applicationStep3") || "{}"),
+      vehicles: JSON.parse(localStorage.getItem("vehicles") || "[]"),
+      step5: JSON.parse(localStorage.getItem("applicationStep5") || "{}"),
+      step6: JSON.parse(localStorage.getItem("applicationStep6") || "{}"),
+    };
+
+    handleMail(applicationData);
+
+    console.log("Submitting full application:", applicationData);
+    toast.success("Application Submitted! We will contact you soon.");
+
+    // Clear stored data
+    Object.keys(applicationData).forEach((key) =>
+      localStorage.removeItem(
+        key.startsWith("step")
+          ? `application${key.charAt(0).toUpperCase() + key.slice(1)}`
+          : "quoteData"
+      )
+    );
+
+    localStorage.removeItem("vehicles");
+
+    setTimeout(() => {
+      router.push("/");
+    }, 3000);
+
+    // router.push("/application/step-7"); // Assuming next step is a summary page
   };
 
   return (
@@ -94,46 +176,46 @@ const ApplicationStep6Page = () => {
 
         {/* --- Other Business Insurance --- */}
         <section className="mb-5">
-          <h2 className="text-large font-bold text-cyan-800 mb-4">
+          <h2 className="text-large font-bold text-cyan-800 mb-2">
             Other Business Insurance
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 items-start">
-            <label className="font-semibold text-sm text-gray-700">
+        <label className="font-semibold text-sm text-gray-700 mb-2">
               Do you currently have other coverages for your business?
               {/* <QuestionMarkIcon /> */}
+        </label>
+          <div className="flex flex-col gap-y-2">
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="otherCoverageType"
+                value="generalLiability"
+                checked={formData.otherCoverageType.includes("generalLiability")}
+                onChange={handleCoverageChange}
+              />
+              <span className="ml-2">General Liability</span>
             </label>
-            <div className="flex flex-col gap-y-2">
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="otherCoverageType"
-                  value="generalLiability"
-                  checked={formData.otherCoverageType === "generalLiability"}
-                  onChange={handleChange}
-                />{" "}
-                <span className="ml-2">General Liability</span>
-              </label>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="otherCoverageType"
-                  value="businessOwnerPolicy"
-                  checked={formData.otherCoverageType === "businessOwnerPolicy"}
-                  onChange={handleChange}
-                />{" "}
-                <span className="ml-2">Business Owner's Policy</span>
-              </label>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="radio"
-                  name="otherCoverageType"
-                  value="none"
-                  checked={formData.otherCoverageType === "none"}
-                  onChange={handleChange}
-                />{" "}
-                <span className="ml-2">None</span>
-              </label>
-            </div>
+
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="otherCoverageType"
+                value="businessOwnerPolicy"
+                checked={formData.otherCoverageType.includes("businessOwnerPolicy")}
+                onChange={handleCoverageChange}
+              />
+              <span className="ml-2">Business Owner's Policy</span>
+            </label>
+
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="otherCoverageType"
+                value="none"
+                checked={formData.otherCoverageType.length === 0}
+                onChange={handleCoverageChange}
+              />
+              <span className="ml-2">None</span>
+            </label>
           </div>
         </section>
 
