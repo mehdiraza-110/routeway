@@ -70,7 +70,7 @@ const ApplicationStep5Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 items-start">
             {/* --- Row 1: Driver's License State --- */}
             <label className="font-semibold text-gray-700">
-              Driver's License State 
+              Driver's License State
               {/* <QuestionMarkIcon /> */}
             </label>
             <div>
@@ -80,16 +80,63 @@ const ApplicationStep5Page = () => {
                 onChange={handleChange}
                 className="w-full max-w-xs p-2 border border-gray-400 rounded-md bg-white shadow-inner"
               >
+                <option value="">Select a state</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
                 <option>Florida</option>
                 <option>Georgia</option>
-                <option>Alabama</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option>Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option>Nevada</option>
+                <option>New Hampshire</option>
+                <option>New Jersey</option>
+                <option>New Mexico</option>
+                <option>New York</option>
+                <option>North Carolina</option>
+                <option>North Dakota</option>
+                <option>Ohio</option>
+                <option>Oklahoma</option>
+                <option>Oregon</option>
+                <option>Pennsylvania</option>
+                <option>Rhode Island</option>
+                <option>South Carolina</option>
+                <option>South Dakota</option>
+                <option>Tennessee</option>
                 <option>Texas</option>
+                <option>Utah</option>
+                <option>Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
               </select>
             </div>
 
             {/* --- Row 2: Exclude Driver --- */}
             <label className="font-semibold text-gray-700">
-              Exclude this driver from the policy? 
+              Exclude this driver from the policy?
               {/* <QuestionMarkIcon /> */}
               <p className="text-sm text-gray-500 font-normal mt-1">
                 (No Coverage)

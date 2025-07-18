@@ -27,6 +27,7 @@ const ApplicationStep4Page = () => {
         grossWeight: JSON.parse(vehs).grossVehicleWeight || "",
         rearAxles: JSON.parse(vehs).rearAxles || "",
         loanLeaseStatus: "no",
+        vin: JSON.parse(vehs).vin || ""
       },
     ];
     return initialVehicles;
@@ -51,6 +52,7 @@ const ApplicationStep4Page = () => {
   };
 
   const handleOpenEditModal = (vehicle: Vehicle) => {
+    console.log("VEHP: ", vehicle);
     setEditingVehicle(vehicle);
     setIsModalOpen(true);
   };
@@ -95,10 +97,10 @@ const ApplicationStep4Page = () => {
         </div>
 
         <form onSubmit={handleContinue} className="p-4 md:p-8">
-          <div className="text-right text-xs md:text-sm text-gray-500 mb-6">
+          {/* <div className="text-right text-xs md:text-sm text-gray-500 mb-6">
             <p>Named Insured: ccc</p>
             <p>Quote Number: CA113449493</p>
-          </div>
+          </div> */}
 
           <section className="mb-8">
             <h2 className="text-lg font-semibold text-gray-700 mb-2">
@@ -146,7 +148,7 @@ const ApplicationStep4Page = () => {
                 onClick={handleOpenAddModal}
                 className="px-8 py-2 cursor-pointer border border-slate-600 text-slate-600 rounded-md hover:bg-slate-50 w-full md:w-80"
               >
-                Add another x
+                Add another vehicle
               </button>
             </div>
           </section>

@@ -65,9 +65,6 @@ const ApplicationStep1Page = () => {
         setKeywordResults([]); // Clear results if input is empty
       }
     }
-    if (name == "usdotNumberStatus") {
-      setShowDotInput(true);
-    }
   };
 
   const handleKeywordSelect = (keyword: string) => {
@@ -98,7 +95,10 @@ const ApplicationStep1Page = () => {
                   type="radio"
                   value="yes"
                   checked={formData.usdotNumberStatus === "yes"}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setShowDotInput(true);
+                  }}
                   className="h-4 w-4 text-slate-600 border-gray-300 focus:ring-slate-500"
                 />
                 <label htmlFor="usdot-yes" className="ml-3 block text-sm">
@@ -112,7 +112,10 @@ const ApplicationStep1Page = () => {
                   type="radio"
                   value="no"
                   checked={formData.usdotNumberStatus === "no"}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setShowDotInput(false);
+                  }}
                   className="h-4 w-4 text-slate-600 border-gray-300 focus:ring-slate-500"
                 />
                 <label htmlFor="usdot-no" className="ml-3 block text-sm">
@@ -126,7 +129,10 @@ const ApplicationStep1Page = () => {
                   type="radio"
                   value="not_yet"
                   checked={formData.usdotNumberStatus === "not_yet"}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setShowDotInput(false);
+                  }}
                   className="h-4 w-4 text-slate-600 border-gray-300 focus:ring-slate-500"
                 />
                 <label htmlFor="usdot-not-yet" className="ml-3 block text-sm">

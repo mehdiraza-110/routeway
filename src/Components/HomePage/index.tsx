@@ -60,6 +60,7 @@ const HomePage = () => {
       toast.error("Please fill all fields to get a quote.");
       return;
     }
+    toast.success("Quote request has been sent successfully!");
     localStorage.setItem("quoteData", JSON.stringify(formData));
     router.push("/quote-options");
     const vehType = formData.vehicleType;

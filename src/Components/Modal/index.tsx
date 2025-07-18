@@ -22,7 +22,107 @@ export interface Vehicle {
   grossWeight: string;
   rearAxles: string;
   loanLeaseStatus: "loan" | "lease" | "no";
+  vin?: string;
+  bodyType?: string;
 }
+
+interface VehicleTypeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  currentValue: string;
+  onSave: (newType: string) => void;
+}
+
+const VehicleTypeModal = ({
+  isOpen,
+  onClose,
+  currentValue,
+  onSave,
+}: VehicleTypeModalProps) => {
+  if (!isOpen) return null;
+
+  const [selectedType, setSelectedType] = useState(currentValue);
+
+  const vehicleOptions = [
+    "Refrigerated Trucks",
+    "Box Trucks",
+    "Cargo Vans",
+    "Step Vans",
+    "SUV, Pickup Truck",
+    "Contractor Trucks",
+    "Service Trucks",
+    "Landscape Trucks",
+    "Utility Vans",
+    "Dump Trucks",
+    "Flatbed Trucks",
+    "Cab Chassis",
+    "Hauler Trucks",
+    "Hooklift Trucks",
+    "Mechanic Trucks",
+    "Rollback Trucks",
+    "Tractor Trucks",
+    "Wrecker Trucks",
+    "other",
+  ];
+
+  const handleSave = () => {
+    onSave(selectedType);
+    onClose();
+  };
+
+  return (
+    <div
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+      className="fixed inset-0 z-50 flex justify-center items-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md"
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+      >
+        <h3 className="text-xl font-semibold mb-4">Select Vehicle Type</h3>
+        <div className="mb-6">
+          <label
+            htmlFor="vehicleTypeSelect"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Vehicle Type
+          </label>
+          <select
+            id="vehicleTypeSelect"
+            value={selectedType}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setSelectedType(e.target.value)
+            }
+            className="w-full h-12 px-4 rounded-md border border-gray-300 bg-white"
+          >
+            {vehicleOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 h-10 cursor-pointer rounded-md border border-gray-300 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="px-6 h-10 cursor-pointer rounded-md text-white bg-[#254184] hover:bg-slate-800"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- Helper Components ---
 const QuestionMarkIcon: FC = () => (
@@ -80,9 +180,14 @@ const VehicleModal = ({
     grossWeight: "",
     rearAxles: "",
     loanLeaseStatus: "no",
+    vin: "",
+    bodyType: "",
   };
 
   const [formData, setFormData] = useState<Vehicle>(defaultVehicleState);
+  const [isVin, setIsVin] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   useEffect(() => {
     setFormData(initialData || defaultVehicleState);
@@ -91,6 +196,10 @@ const VehicleModal = ({
   if (!isOpen) {
     return null;
   }
+
+  const handleVehicleTypeSave = (newType: string) => {
+    setFormData((prev) => ({ ...prev, vehicleType: newType }));
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -121,7 +230,7 @@ const VehicleModal = ({
           <FormRow label="Vehicle Type">
             <div className="flex justify-between items-center w-full">
               <span className="text-gray-800">{formData.vehicleType}</span>
-              <button className="px-6 py-1 cursor-pointer border border-slate-600 text-slate-600 rounded-md text-sm hover:bg-slate-50">
+              <button onClick={() => setIsModalOpen(true)} className="px-6 py-1 cursor-pointer border border-slate-600 text-slate-600 rounded-md text-sm hover:bg-slate-50">
                 Edit
               </button>
             </div>
@@ -138,7 +247,10 @@ const VehicleModal = ({
                   name="addBy"
                   id="year"
                   checked={formData.addBy === "year"}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setIsVin(false);
+                  }}
                   className="form-radio"
                 />{" "}
                 <span className="ml-2">Year, Make, Model</span>
@@ -149,13 +261,29 @@ const VehicleModal = ({
                   name="addBy"
                   id="vin"
                   checked={formData.addBy === "vin"}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setIsVin(true);
+                  }}
                   className="form-radio"
                 />{" "}
                 <span className="ml-2">VIN</span>
               </label>
             </div>
           </FormRow>
+          {isVin && (
+            <FormRow label="Vin">
+              <input
+                type="text"
+                value={formData.vin || ""}
+                max={17}
+                maxLength={17}
+                onChange={handleChange}
+                name="vin"
+                className="w-full h-12 px-4 rounded-md border border-gray-300 bg-white"
+              />
+            </FormRow>
+          )}
 
           <FormRow label="Year">
             <select
@@ -174,17 +302,49 @@ const VehicleModal = ({
           </FormRow>
 
           <FormRow label="Make">
-            <input
+            {/* <input
               type="text"
               name="make"
               value={formData.make}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
-            />
+            /> */}
+            <select
+              id="make"
+              name="make"
+              value={formData.make}
+              onChange={handleChange}
+              className="md:col-span-2 w-full h-12 p-2 rounded-md border border-gray-300 bg-white"
+            >
+              <option value="" disabled>
+                Select Make
+              </option>
+              <option value="Ford">Ford</option>
+              <option value="Chevrolet">Chevrolet</option>
+              <option value="GMC">GMC</option>
+              <option value="Ram">Ram</option>
+              <option value="Tesla">Tesla</option>
+              <option value="Rivian">Rivian</option>
+              <option value="Lordstown Motors">Lordstown Motors</option>
+              <option value="Peterbilt">Peterbilt</option>
+              <option value="Kenworth">Kenworth</option>
+              <option value="Freightliner">Freightliner</option>
+              <option value="International">International</option>
+              <option value="Mack">Mack</option>
+              <option value="Western Star">Western Star</option>
+            </select>
           </FormRow>
 
           <FormRow label="Body Style">
-            <span className="text-gray-800">{formData.bodyStyle}</span>
+            {/* <span className="text-gray-800">{formData.bodyStyle}</span>
+            {/* Form Row: Body Style */}
+              <input
+                type="text"
+                name="bodyType"
+                value={formData.bodyType || ""}
+                onChange={handleChange}
+                className="h-12 p-2 rounded-md w-full border border-gray-300 bg-white"
+              />
           </FormRow>
 
           <FormRow label="Zip code where the vehicle is located">
@@ -320,6 +480,12 @@ const VehicleModal = ({
             Save Vehicle
           </button>
         </div>
+        <VehicleTypeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentValue={formData?.vehicleType ?? ""}
+        onSave={handleVehicleTypeSave}
+      />
       </div>
     </div>
   );

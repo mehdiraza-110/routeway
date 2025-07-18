@@ -89,7 +89,9 @@ export async function POST(req: Request) {
     // .join('\n');
     
     // Build Google Sheet payload (your existing structure)
-    
+    const allVehs = vehicles.map(v =>
+  `Name: ${v.name}, Year: ${v.year}, Make: ${v.make}, Type: ${v.vehicleType}, Add By: ${v.addBy}, Body Style: ${v.bodyStyle}, Zip: ${v.zipCode}, Distance: ${v.travelDistance}, ABS: ${v.hasAbs}, Airbag: ${v.hasAirbag}, Rear Axles: ${v.rearAxles}, Gross Weight: ${v.grossWeight}, Loan/Lease: ${v.loanLeaseStatus}, VIN: ${v.vin}, Anti-Theft: ${Array.isArray(v.antiTheftDevice) ? v.antiTheftDevice.join(', ') : v.antiTheftDevice}`
+).join(' | ') || '';
     const sheetPayload = {
       policyStart: new Date().toLocaleDateString("de-DE"),
       phone: phone,
@@ -141,7 +143,7 @@ export async function POST(req: Request) {
       //   year: vehicle.year || '',
       //   zipCode: vehicle.zipCode || '',
       // })),
-      vehicles: vehicles.toString() || '',
+      vehicles: allVehs || '',
       hasAccidents: step5.hasAccidents || '',
       hasCdl: step5.hasCdl || '',
       isExcluded: step5.isExcluded || '',
