@@ -121,11 +121,11 @@ const ApplicationStep6Page = () => {
 
     localStorage.removeItem("vehicles");
 
-    setTimeout(() => {
-      router.push("/");
-    }, 3000);
+    // setTimeout(() => {
+    //   router.push("/");
+    // }, 3000);
 
-    // router.push("/application/step-7"); // Assuming next step is a summary page
+    router.push("/application/step-7"); // Assuming next step is a summary page
   };
 
   return (

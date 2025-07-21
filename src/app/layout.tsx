@@ -32,7 +32,7 @@ export default function RootLayout({
         suppressHydrationWarning={true} // <-- ADD THIS LINE
       >
         {children}
-        <ToastProvider />
+        {/* <ToastProvider /> */}
       </body>
     </html>
   );
