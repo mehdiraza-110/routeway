@@ -243,6 +243,7 @@ const ApplicationStep3Page = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem("applicationStep3", JSON.stringify(formData));
+    // localStorage.setItem("vehicles", JSON.stringify(formData))
     router.push("/application/step-4");
   };
 

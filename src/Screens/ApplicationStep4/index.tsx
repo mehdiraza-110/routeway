@@ -41,6 +41,7 @@ const ApplicationStep4Page = () => {
 
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
+    localStorage.setItem("vehicles", JSON.stringify(vehicles));
     router.push("/application/step-5");
   };
 
