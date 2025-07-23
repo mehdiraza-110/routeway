@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, Fragment, forwardRef, FC, ComponentProps, useEffect } from "react";
+import {
+  useState,
+  Fragment,
+  forwardRef,
+  FC,
+  ComponentProps,
+  useEffect,
+} from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
@@ -68,11 +75,12 @@ interface QuickRequestModalProps {
 }
 
 const QuickRequestModal: FC<QuickRequestModalProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    policyStartDate: undefined as Date | undefined
+    policyStartDate: undefined as Date | undefined,
   });
 
   const handleFormChange = (
@@ -90,45 +98,44 @@ const QuickRequestModal: FC<QuickRequestModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleMail = async () => {
-     const mailPayload = {
+    const mailPayload = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      message: 'Hello from the contact form!',
+      message: "Hello from the contact form!",
       Date: formData.policyStartDate,
     };
 
-    const res = await fetch('/api/send-mail', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/send-mail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(mailPayload),
     });
 
     const data = await res.json();
 
     if (data.success) {
-      console.log('Email sent successfully:', data);
+      console.log("Email sent successfully:", data);
       toast.success("Your request has been sent successfully!");
       return true;
     } else {
-      toast.error('Failed to send email.');
+      toast.error("Failed to send email.");
       return false;
     }
-
-  }
+  };
 
   useEffect(() => {
-       const stored = localStorage.getItem("quoteData");
-        let phone = "";
-  
-        if (stored) {
-            const data = JSON.parse(stored);
-            const phoneNum = data?.phone || "";
-            phone = phoneNum;
-          }
-          console.log(phone);
-          setFormData({ ...formData, phone: phone });
-    }, []);
+    const stored = localStorage.getItem("quoteData");
+    let phone = "";
+
+    if (stored) {
+      const data = JSON.parse(stored);
+      const phoneNum = data?.phone || "";
+      phone = phoneNum;
+    }
+    console.log(phone);
+    setFormData({ ...formData, phone: phone });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +150,7 @@ const QuickRequestModal: FC<QuickRequestModalProps> = ({ isOpen, onClose }) => {
     }
     console.log("Quick request submitted:", formData);
     toast.success("Request submitted! We'll email your quote shortly.");
+    router.push("/application/quick-landing");
     onClose();
   };
 
