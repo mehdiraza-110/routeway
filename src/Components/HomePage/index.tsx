@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { MapPin, Phone } from "lucide-react";
 import Image from "next/image";
+import CinematicPlayer from "../CinematicPlayer";
 
 const vehicleTypes = [
   "Refrigerated Trucks",
@@ -81,7 +82,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="relative w-full h-80 md:h-96">
+      {/* <div className="relative w-full h-80 md:h-96">
         <Image
           src="/home.png"
           alt="Commercial trucks on a highway at dusk"
@@ -90,15 +91,15 @@ const HomePage = () => {
           className="object-cover h-64 md:h-100"
           style={{ filter: "brightness(0.6)" }}
         />
-      </div>
+      </div> */}
       <main className="bg-gray-50 py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Routeway Insurance Group
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 !text-[#254184]">
+              Save Big on Insurance
             </h2>
             <p className="text-lg md:text-xl text-gray-600">
-              Protection for your business vehicles
+              Commercial Vehicle Insurance Specialists - Free Quote Now
             </p>
           </div>
           <div className="max-w-5xl mx-auto mb-12 md:mb-16">
@@ -167,6 +168,16 @@ const HomePage = () => {
                 </div>
               </form>
             </div>
+          </div>
+          <div className="max-w-5xl mx-auto">
+                {/* <video 
+                src="/routeway-insurance.mp4"
+                controls={true}>
+                </video> */}
+                <CinematicPlayer 
+                  src="/videos/routeway-insurance.mp4"
+                  className="max-h-[800px] mb-15"
+                />
           </div>
           <div className="max-w-3xl mx-auto space-y-8">
             <div>
