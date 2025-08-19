@@ -30,8 +30,10 @@ const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setPreviewTime(parseFloat(e.target.value)); // slider moves smoothly
 };
 
-const handleSeekCommit = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const t = parseFloat(e.target.value);
+const handleSeekCommit = (
+  e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>
+) => {
+  const t = parseFloat(e.currentTarget.value);
   setPreviewTime(null);
   seekTo(t); // actually move video
 };
