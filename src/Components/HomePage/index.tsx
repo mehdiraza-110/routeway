@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, Phone, Shield } from "lucide-react";
 import Image from "next/image";
 import CinematicPlayer from "../CinematicPlayer";
+import PrivacyBanner from "../PrivacyBanner";
 
 const vehicleTypes = [
   "Refrigerated Trucks",
@@ -102,7 +103,7 @@ const HomePage = () => {
               Commercial Vehicle Insurance Specialists - Free Quote Now
             </p>
           </div>
-          <div className="max-w-5xl mx-auto mb-12 md:mb-16">
+          <div className="max-w-5xl mx-auto mb-10 md:mb-10">
             <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
@@ -169,6 +170,9 @@ const HomePage = () => {
               </form>
             </div>
           </div>
+          
+          <PrivacyBanner className="!max-w-5xl !mx-auto mb-16" />
+          
           <div className="max-w-5xl mx-auto">
                 {/* <video 
                 src="/routeway-insurance.mp4"
